@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RevCard — Ultimate Vehicle Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c9a84c;--gold2:#f5d97a;--dark:#050505;
+  --glass:rgba(255,255,255,0.045);--glass2:rgba(255,255,255,0.09);
+  --border:rgba(201,168,76,0.18);--text:#e6e6e6;--muted:#666;
+}
+:root{
+  --gold:#c9a84c;--gold2:#f5d97a;--dark:#050505;
+  --glass:rgba(255,255,255,0.045);--glass2:rgba(255,255,255,0.09);
+  --border:rgba(201,168,76,0.18);--text:#e6e6e6;--muted:#666;
+}
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none}
+body *{cursor:none}
+
+/* CURSOR */
+#cur{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;top:0;left:0;transform:translate(-50%,-50%);mix-blend-mode:difference}
+#cur-r{position:fixed;width:34px;height:34px;border:1px solid rgba(201,168,76,.4);border-radius:50%;pointer-events:none;z-index:9998;top:0;left:0;transform:translate(-50%,-50%);transition:border-color .2s,width .15s,height .15s}
+
+/* PARTICLES */
+#ptc{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;inset:0 0 auto;z-index:200;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;transition:all .35s}
+nav.s{background:rgba(5,5,5,.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 48px}
+.nl{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:5px;background:linear-gradient(135deg,#fff 20%,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nr{display:flex;gap:28px;list-style:none}
+.nr a{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .3s}
+.nr a:hover{color:var(--gold)}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;z-index:1}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(201,168,76,.07) 0%,transparent 70%)}
+.hline{position:absolute;top:0;left:50%;width:1px;height:36%;background:linear-gradient(to bottom,transparent,var(--gold),transparent);transform:translateX(-50%);opacity:.3}
+.ey{font-size:10px;letter-spacing:7px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;opacity:0;animation:fU .7s .3s both}
+.ht{font-family:'Playfair Display',serif;font-size:clamp(60px,11vw,160px);font-weight:900;line-height:.87;letter-spacing:-2px;background:linear-gradient(150deg,#fff 0%,var(--gold2) 30%,var(--gold) 60%,#7a5510 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:0;animation:fU .8s .5s both}
+.hs{font-size:clamp(13px,1.4vw,16px);color:var(--muted);font-weight:300;letter-spacing:2.5px;margin-top:16px;max-width:460px;opacity:0;animation:fU .8s .7s both}
+.hst{display:flex;gap:52px;margin-top:52px;opacity:0;animation:fU .8s .9s both}
+.hsn{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--gold);line-height:1;text-align:center}
+.hsl{font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:2px;text-align:center}
+.hscr{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;animation:fI 1s 1.3s both}
+.hscr span{font-size:8px;letter-spacing:4px;color:var(--muted);text-transform:uppercase}
+.sl{width:1px;height:44px;background:linear-gradient(to bottom,var(--gold),transparent);animation:sP 2s infinite}
+
+/* MARQUEE */
+.mqs{padding:28px 0;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.mqt{display:flex;gap:44px;animation:mq 40s linear infinite;white-space:nowrap;will-change:transform}
+.mqi{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:4px;color:rgba(255,255,255,.13);flex-shrink:0;display:flex;align-items:center;gap:14px}
+.mqi b{color:var(--gold);font-size:9px;font-weight:400}
+
+/* FEATURED */
+.fwrap{padding:70px 48px 50px;position:relative;z-index:1}
+.feat{min-height:58vh;position:relative;overflow:hidden;border-radius:20px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.04);background:linear-gradient(135deg,#0a0800 0%,#060400 100%)}
+/* Animated bg for featured */
+.feat::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 80% 50%,rgba(201,168,76,.06) 0%,transparent 70%)}
+.fct{position:relative;z-index:1;padding:64px}
+.ftag{display:inline-block;padding:4px 13px;border:1px solid var(--gold);border-radius:100px;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.ftitle{font-family:'Playfair Display',serif;font-size:clamp(38px,7vw,90px);font-weight:900;line-height:.92;margin-bottom:14px}
+.fsub{font-size:15px;color:rgba(255,255,255,.5);margin-bottom:28px;max-width:400px;line-height:1.65}
+.fspecs{display:flex;gap:28px;margin-bottom:28px;flex-wrap:wrap}
+.fsp{border-left:2px solid var(--gold);padding-left:12px}
+.fspv{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);line-height:1}
+.fspl{font-size:8px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:2px}
+.xbtn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:var(--gold);color:#000;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;border-radius:100px;border:none;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif}
+.xbtn:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 14px 32px rgba(201,168,76,.3)}
+/* Featured SVG car */
+.feat-svg{position:absolute;right:-40px;bottom:-20px;width:60%;max-width:600px;opacity:.06;pointer-events:none}
+.feat-svg svg{width:100%;height:auto}
+
+/* SECTION */
+.sec{position:relative;z-index:1;padding:70px 48px}
+.slbl{font-size:9px;letter-spacing:7px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.stitle{font-family:'Playfair Display',serif;font-size:clamp(30px,4.5vw,62px);font-weight:900;line-height:1.04;margin-bottom:16px}
+.stitle span{color:var(--gold)}
+.sdesc{font-size:14px;color:var(--muted);max-width:460px;line-height:1.8;margin-bottom:44px}
+
+/* SEARCH */
+.sbar{position:relative;margin-bottom:28px;max-width:420px}
+.sbar input{width:100%;padding:13px 18px 13px 46px;background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:100px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .25s}
+.sbar input:focus{border-color:var(--gold);background:var(--glass2)}
+.sbar input::placeholder{color:var(--muted)}
+.sbar svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2}
+
+/* FILTER */
+.fbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:38px;position:sticky;top:60px;z-index:50;padding:12px 0 14px;background:linear-gradient(to bottom,var(--dark) 78%,transparent)}
+.fb{padding:8px 18px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .22s;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.fb:hover{border-color:var(--gold);color:var(--gold)}
+.fb.on{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px}
+.nor{display:none;grid-column:1/-1;text-align:center;padding:70px;color:var(--muted);font-size:14px}
+.nor.show{display:block}
+
+/* ── CARD ──────────────────────────────────────────── */
+.cw{perspective:1000px;min-height:460px;opacity:0;transform:translateY(28px);transition:opacity .5s,transform .5s;will-change:transform,opacity}
+.cw.vis{opacity:1;transform:translateY(0)}
+.ci{position:relative;width:100%;height:100%;min-height:460px;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.23,1,.32,1);will-change:transform}
+.cw.flp .ci{transform:rotateY(180deg) !important}
+@media (hover:hover) and (pointer:fine){
+  /* Desktop: use hover flip (matches the UI copy). */
+  .cw.vis:hover .ci{transform:rotateY(180deg) !important}
+}
+.cf,.cb{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;overflow:hidden}
+.cb{transform:rotateY(180deg)}
+
+/* FRONT CARD — CSS gradient background, always looks great */
+.cf{border:1px solid rgba(255,255,255,.06);position:relative}
+
+/* Tier-based gradient backgrounds */
+.bg-hyper  {background:linear-gradient(145deg,#1a0500 0%,#300800 40%,#0a0300 100%)}
+.bg-super  {background:linear-gradient(145deg,#0d0a00 0%,#1e1400 40%,#080600 100%)}
+.bg-sport  {background:linear-gradient(145deg,#000a1f 0%,#001235 40%,#000509 100%)}
+.bg-luxury {background:linear-gradient(145deg,#0a0015 0%,#14002a 40%,#050009 100%)}
+.bg-suv    {background:linear-gradient(145deg,#001508 0%,#00220d 40%,#000a04 100%)}
+.bg-ev     {background:linear-gradient(145deg,#00151f 0%,#002233 40%,#00090f 100%)}
+.bg-bike   {background:linear-gradient(145deg,#1a0000 0%,#2a0000 40%,#0a0000 100%)}
+.bg-classic{background:linear-gradient(145deg,#0f0f0f 0%,#1a1a1a 40%,#080808 100%)}
+.bg-bronze {background:linear-gradient(145deg,#180b00 0%,#261200 40%,#0c0500 100%)}
+
+/* SVG silhouette area */
+.csilhouette{width:100%;height:52%;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.csilhouette::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,transparent 60%)}
+.csv-el{width:82%;max-width:240px;height:auto;position:relative;z-index:1;filter:drop-shadow(0 0 28px rgba(201,168,76,.18));opacity:.75;transition:opacity .4s,transform .4s;transform:translateY(6px)}
+.cw:hover .csv-el{opacity:.95;transform:translateY(0) scale(1.04)}
+/* Glow dot behind silhouette */
+.glow{position:absolute;width:60%;height:60%;border-radius:50%;filter:blur(40px);z-index:0;opacity:.25}
+
+/* Tier glow colors */
+.glow-hyper  {background:radial-gradient(#ff3300,transparent)}
+.glow-super  {background:radial-gradient(#c9a84c,transparent)}
+.glow-sport  {background:radial-gradient(#3366ff,transparent)}
+.glow-luxury {background:radial-gradient(#8833ff,transparent)}
+.glow-suv    {background:radial-gradient(#00cc44,transparent)}
+.glow-ev     {background:radial-gradient(#00ddff,transparent)}
+.glow-bike   {background:radial-gradient(#ff2222,transparent)}
+.glow-classic{background:radial-gradient(#888,transparent)}
+.glow-bronze {background:radial-gradient(#cd7f32,transparent)}
+
+/* Tier badge */
+.ctier{position:absolute;top:12px;right:12px;padding:3px 10px;border-radius:100px;font-size:7px;letter-spacing:2px;font-weight:700;text-transform:uppercase;z-index:3}
+.t-hyper {background:linear-gradient(135deg,#ff5500,#cc0000);color:#fff}
+.t-super {background:linear-gradient(135deg,var(--gold),#8a6010);color:#000}
+.t-sport {background:linear-gradient(135deg,#2266ff,#6622cc);color:#fff}
+.t-luxury{background:linear-gradient(135deg,#8833ee,#3b0764);color:#fff}
+.t-suv   {background:linear-gradient(135deg,#00aa44,#005522);color:#fff}
+.t-ev    {background:linear-gradient(135deg,#00ddff,#0055bb);color:#000}
+.t-bike  {background:linear-gradient(135deg,#ff3333,#880000);color:#fff}
+.t-classic{background:linear-gradient(135deg,#aaa,#555);color:#000}
+.t-bronze{background:linear-gradient(135deg,#cd7f32,#6b3000);color:#fff}
+
+/* Compare btn */
+.cmpbtn{position:absolute;top:12px;left:12px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;z-index:3}
+.cmpbtn svg{width:12px;height:12px;stroke:#777;fill:none;stroke-width:2;transition:stroke .2s}
+.cmpbtn:hover{border-color:var(--gold)}
+.cmpbtn:hover svg{stroke:var(--gold)}
+.cmpbtn.sel{background:var(--gold);border-color:var(--gold)}
+.cmpbtn.sel svg{stroke:#000}
+
+/* Card content */
+.cc{position:absolute;bottom:0;left:0;right:0;padding:14px 16px;z-index:2}
+.cma{font-size:8px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.cnm{font-family:'Bebas Neue',sans-serif;font-size:27px;letter-spacing:1px;line-height:1;margin-bottom:10px}
+.cst{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px}
+.cs{text-align:center;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);border-radius:6px;padding:6px 2px;border:1px solid rgba(255,255,255,.06)}
+.csv2{font-family:'Bebas Neue',sans-serif;font-size:17px;line-height:1}
+.csl2{font-size:7px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:1px}
+.sbw{display:flex;flex-direction:column;gap:3px}
+.sbr{display:flex;align-items:center;gap:6px}
+.sbl{font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);width:22px;flex-shrink:0}
+.sbt{flex:1;height:2px;background:rgba(255,255,255,.08);border-radius:1px;overflow:hidden}
+.sbf{height:100%;border-radius:1px;transform:scaleX(0);transform-origin:left;transition:transform .85s .4s ease}
+.cw.vis .sbf{transform:scaleX(1)}
+
+/* Share btn */
+.shbtn{position:absolute;bottom:12px;right:12px;width:26px;height:26px;border-radius:50%;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.22);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;z-index:3}
+.shbtn svg{width:12px;height:12px;stroke:var(--gold);fill:none;stroke-width:2}
+.shbtn:hover{background:var(--gold);border-color:var(--gold)}
+.shbtn:hover svg{stroke:#000}
+
+/* BACK */
+.cb{background:linear-gradient(145deg,#0c0c0c,#141414);border:1px solid rgba(201,168,76,.14)}
+.bh{padding:16px 18px 10px;border-bottom:1px solid rgba(255,255,255,.05)}
+.bma{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+.bnm{font-family:'Bebas Neue',sans-serif;font-size:25px;letter-spacing:1px;margin-top:2px}
+.byr{font-size:10px;color:var(--muted);margin-top:1px}
+.brt{display:flex;align-items:center;gap:7px;padding:8px 18px 5px}
+.rbb{flex:1;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+.rbf{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px}
+.rbn{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--gold)}
+.bsp{padding:4px 18px;display:grid;grid-template-columns:1fr 1fr;gap:0}
+.bsi{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.bsk{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.bsv{font-size:11px;font-weight:600}
+.bsv.hi{color:var(--gold)}
+.bds{padding:8px 18px 6px;font-size:10px;color:#5a5a5a;line-height:1.6;border-top:1px solid rgba(255,255,255,.03)}
+.bhi{padding:6px;text-align:center;font-size:7px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(201,168,76,.28)}
+
+/* COMPARE DOCK */
+#cmp-dock{position:fixed;bottom:24px;right:24px;z-index:250;display:none;flex-direction:column;align-items:flex-end;gap:8px}
+#cmp-dock.show{display:flex}
+.dcard{display:flex;align-items:center;gap:8px;background:rgba(10,10,10,.92);border:1px solid var(--border);border-radius:100px;padding:6px 14px 6px 10px;backdrop-filter:blur(14px)}
+.dthumb{width:44px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.dthumb svg{width:38px;height:auto;opacity:.7}
+.dname{font-size:11px;font-weight:600;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dx{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;margin-left:4px;line-height:1;transition:color .2s}
+.dx:hover{color:#ff4545}
+#dcmpbtn{padding:10px 20px;background:var(--gold);color:#000;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:none}
+#dcmpbtn:hover{background:var(--gold2)}
+#dcmpbtn.show{display:block}
+
+/* COMPARE PANEL */
+#cpanel{position:fixed;bottom:0;left:0;right:0;z-index:300;transform:translateY(100%);transition:transform .4s cubic-bezier(.23,1,.32,1);background:rgba(6,6,6,.97);backdrop-filter:blur(24px);border-top:1px solid var(--border);padding:28px 48px 36px;max-height:82vh;overflow-y:auto}
+#cpanel.open{transform:translateY(0)}
+.cphead{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.cptitle{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold)}
+.cpclose{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.cpclose:hover{border-color:var(--gold);color:var(--gold)}
+.cpgrid{display:grid;grid-template-columns:1fr auto 1fr;gap:32px;align-items:start}
+.cpvs{font-family:'Bebas Neue',sans-serif;font-size:38px;color:rgba(255,255,255,.15);align-self:center;text-align:center}
+.cpcar{background:var(--glass);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.cpthumb{width:100%;height:120px;display:flex;align-items:center;justify-content:center;position:relative}
+.cpthumb svg{width:70%;max-width:200px;height:auto;opacity:.6}
+.cpinfo{padding:16px}
+.cpcmake{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:2px}
+.cpcname{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px}
+.cpcstats{margin-top:14px;display:flex;flex-direction:column;gap:7px}
+.cpstat{display:flex;align-items:center;gap:9px}
+.cpsl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);width:28px;flex-shrink:0}
+.cpbw{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.cpb{height:100%;border-radius:3px;transition:width .9s .1s ease}
+.bar-a{background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.bar-b{background:linear-gradient(90deg,#3d9dff,#88ccff)}
+.cpval{font-family:'Bebas Neue',sans-serif;font-size:16px;min-width:26px;text-align:right}
+
+/* TOAST */
+#toast{position:fixed;top:78px;right:24px;z-index:500;background:rgba(10,10,10,.96);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:12px;color:var(--text);transform:translateX(120%);transition:transform .3s;backdrop-filter:blur(14px)}
+#toast.show{transform:translateX(0)}
+
+/* FOOTER */
+footer{text-align:center;padding:52px;border-top:1px solid var(--border);position:relative;z-index:1}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:9px;background:linear-gradient(135deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.ftxt{font-size:10px;color:var(--muted);letter-spacing:1px}
+
+@keyframes fU{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fI{from{opacity:0}to{opacity:1}}
+@keyframes sP{0%,100%{opacity:1}50%{opacity:.15}}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+@media(max-width:768px){
+  nav,nav.s{padding:12px 20px}.nr{display:none}
+  .sec,.fwrap{padding:50px 20px}.fct{padding:28px}
+  .hst{gap:24px}.grid{grid-template-columns:1fr}
+  #cpanel{padding:18px 20px}.cpgrid{grid-template-columns:1fr;gap:14px}.cpvs{display:none}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-r"></div>
+<canvas id="ptc"></canvas>
+
+<nav id="nav">
+  <div class="nl">RevCard</div>
+  <ul class="nr">
+    <li><a href="#showcase">Showcase</a></li>
+    <li><a href="#featured">Featured</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hbg"></div><div class="hline"></div>
+  <p class="ey">The Ultimate Vehicle Encyclopedia</p>
+  <h1 class="ht">REVCARD</h1>
+  <p class="hs">Every machine. Every legend. Every heartbeat — on four wheels and two.</p>
+  <div class="hst">
+    <div><div class="hsn" id="c1">0</div><div class="hsl">Vehicles</div></div>
+    <div><div class="hsn" id="c2">0</div><div class="hsl">Categories</div></div>
+    <div><div class="hsn" id="c3">0</div><div class="hsl">Brands</div></div>
+  </div>
+  <div class="hscr"><span>Scroll</span><div class="sl"></div></div>
+</section>
+
+<div class="mqs">
+  <div class="mqt">
+    <div class="mqi">BUGATTI<b>◆</b></div><div class="mqi">FERRARI<b>◆</b></div><div class="mqi">LAMBORGHINI<b>◆</b></div><div class="mqi">PORSCHE<b>◆</b></div><div class="mqi">McLAREN<b>◆</b></div><div class="mqi">MERCEDES-AMG<b>◆</b></div><div class="mqi">BMW M<b>◆</b></div><div class="mqi">ASTON MARTIN<b>◆</b></div><div class="mqi">ROLLS-ROYCE<b>◆</b></div><div class="mqi">TESLA<b>◆</b></div><div class="mqi">DUCATI<b>◆</b></div><div class="mqi">KAWASAKI<b>◆</b></div><div class="mqi">KOENIGSEGG<b>◆</b></div><div class="mqi">PAGANI<b>◆</b></div>
+    <div class="mqi">BUGATTI<b>◆</b></div><div class="mqi">FERRARI<b>◆</b></div><div class="mqi">LAMBORGHINI<b>◆</b></div><div class="mqi">PORSCHE<b>◆</b></div><div class="mqi">McLAREN<b>◆</b></div><div class="mqi">MERCEDES-AMG<b>◆</b></div><div class="mqi">BMW M<b>◆</b></div><div class="mqi">ASTON MARTIN<b>◆</b></div><div class="mqi">ROLLS-ROYCE<b>◆</b></div><div class="mqi">TESLA<b>◆</b></div><div class="mqi">DUCATI<b>◆</b></div><div class="mqi">KAWASAKI<b>◆</b></div><div class="mqi">KOENIGSEGG<b>◆</b></div><div class="mqi">PAGANI<b>◆</b></div>
+  </div>
+</div>
+
+<div id="featured" class="fwrap">
+  <div class="feat">
+    <div class="feat-svg">
+      <svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" fill="#c9a84c">
+        <path d="M10 120 L35 120 L35 100 L80 48 L300 36 L390 68 L440 90 L455 120 L440 120 Q440 145 420 145 Q400 145 400 120 L100 120 Q100 145 80 145 Q60 145 60 120 Z"/>
+        <ellipse cx="80" cy="120" rx="28" ry="28" fill="none" stroke="#c9a84c" stroke-width="5"/>
+        <ellipse cx="420" cy="120" rx="28" ry="28" fill="none" stroke="#c9a84c" stroke-width="5"/>
+        <ellipse cx="80" cy="120" rx="10" ry="10"/>
+        <ellipse cx="420" cy="120" rx="10" ry="10"/>
+      </svg>
+    </div>
+    <div class="fct">
+      <span class="ftag">Featured Beast</span>
+      <h2 class="ftitle">Bugatti<br>Chiron SS</h2>
+      <p class="fsub">1,600 horses. Quad-turbo W16. The pinnacle of what the combustion engine can achieve.</p>
+      <div class="fspecs">
+        <div class="fsp"><div class="fspv">1,600</div><div class="fspl">Horsepower</div></div>
+        <div class="fsp"><div class="fspv">2.3s</div><div class="fspl">0–100 km/h</div></div>
+        <div class="fsp"><div class="fspv">440</div><div class="fspl">Top Speed km/h</div></div>
+        <div class="fsp"><div class="fspv">€3.2M</div><div class="fspl">Price</div></div>
+      </div>
+      <button class="xbtn" onclick="document.getElementById('showcase').scrollIntoView({behavior:'smooth'})">Explore All Vehicles →</button>
+    </div>
+  </div>
+</div>
+
+<section id="showcase" class="sec">
+  <p class="slbl">The Collection</p>
+  <h2 class="stitle">Every Machine.<br><span>One Place.</span></h2>
+  <p class="sdesc">80+ vehicles. Hover to flip. Click ⊞ to compare any two. Click ↓ to save as PNG.</p>
+  <div class="sbar">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="search" type="text" placeholder="Search make, model, country...">
+  </div>
+  <div class="fbar" id="fbar">
+    <button class="fb on" data-c="all">All</button>
+    <button class="fb" data-c="hypercar">Hypercars</button>
+    <button class="fb" data-c="supercar">Supercars</button>
+    <button class="fb" data-c="sport">Sports</button>
+    <button class="fb" data-c="luxury">Luxury</button>
+    <button class="fb" data-c="suv">SUVs</button>
+    <button class="fb" data-c="sedan">Sedans</button>
+    <button class="fb" data-c="ev">Electric</button>
+    <button class="fb" data-c="bike">Motorcycles</button>
+    <button class="fb" data-c="classic">Classics</button>
+    <button class="fb" data-c="bronze">Legends</button>
+  </div>
+  <div class="grid" id="grid"><div class="nor" id="nor">No vehicles found.</div></div>
+</section>
+
+<section id="about" style="padding:80px 48px;text-align:center;position:relative;z-index:1">
+  <p class="slbl" style="text-align:center">About</p>
+  <h2 class="stitle" style="text-align:center;max-width:620px;margin:0 auto 16px">Built for those who feel their <span>pulse race</span> at an engine note</h2>
+  <p style="color:var(--muted);max-width:500px;margin:0 auto;line-height:1.85;font-size:14px">RevCard is a passion project for enthusiasts who live for horsepower, torque curves, and the smell of racing fuel.</p>
+</section>
+
+<footer>
+  <div class="flogo">REVCARD</div>
+  <p class="ftxt">Built for speed enthusiasts · No affiliation with any manufacturer · v4.0</p>
+</footer>
+
+<!-- COMPARE DOCK -->
+<div id="cmp-dock">
+  <div id="dock-slots"></div>
+  <button id="dcmpbtn" onclick="openCompare()">Compare Now →</button>
+</div>
+
+<!-- COMPARE PANEL -->
+<div id="cpanel">
+  <div class="cphead">
+    <span class="cptitle">Head to Head</span>
+    <button class="cpclose" onclick="closeCompare()">✕ Close</button>
+  </div>
+  <div class="cpgrid" id="cpgrid"></div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ─── SVG SILHOUETTES ─────────────────────────────────────────────────────────
+const SVG = {
+  hypercar:`<svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg"><path d="M8 105 L28 105 L28 90 L65 42 L290 30 L390 58 L440 82 L450 105 L435 105 Q435 128 416 128 Q397 128 397 105 L95 105 Q95 128 76 128 Q57 128 57 105 Z"/><ellipse cx="76" cy="105" rx="24" ry="24" fill="none" stroke-width="6"/><ellipse cx="416" cy="105" rx="24" ry="24" fill="none" stroke-width="6"/><ellipse cx="76" cy="105" rx="9" ry="9"/><ellipse cx="416" cy="105" rx="9" ry="9"/><rect x="85" y="38" width="175" height="36" rx="4" opacity=".5"/></svg>`,
+  car:`<svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg"><path d="M18 118 L42 118 L42 100 L80 52 L305 42 L380 68 L435 98 L445 118 L428 118 Q428 144 407 144 Q386 144 386 118 L108 118 Q108 144 87 144 Q66 144 66 118 Z"/><ellipse cx="87" cy="118" rx="28" ry="28" fill="none" stroke-width="6"/><ellipse cx="407" cy="118" rx="28" ry="28" fill="none" stroke-width="6"/><ellipse cx="87" cy="118" rx="10" ry="10"/><ellipse cx="407" cy="118" rx="10" ry="10"/><rect x="90" y="52" width="190" height="42" rx="4" opacity=".45"/></svg>`,
+  suv:`<svg viewBox="0 0 500 170" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="45" width="440" height="90" rx="8"/><rect x="50" y="22" width="400" height="32" rx="6" opacity=".65"/><ellipse cx="100" cy="140" rx="32" ry="32" fill="none" stroke-width="7"/><ellipse cx="400" cy="140" rx="32" ry="32" fill="none" stroke-width="7"/><ellipse cx="100" cy="140" rx="12" ry="12"/><ellipse cx="400" cy="140" rx="12" ry="12"/><rect x="22" y="118" width="456" height="24" rx="4"/></svg>`,
+  bike:`<svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg"><circle cx="130" cy="140" r="65" fill="none" stroke-width="12"/><circle cx="370" cy="140" r="65" fill="none" stroke-width="12"/><circle cx="130" cy="140" r="18"/><circle cx="370" cy="140" r="18"/><path d="M130 140 L200 80 L270 95 L370 140" fill="none" stroke-width="14" stroke-linecap="round"/><path d="M200 80 L220 45 L310 55 L300 100" fill="none" stroke-width="11" stroke-linecap="round"/></svg>`,
+  classic:`<svg viewBox="0 0 500 170" xmlns="http://www.w3.org/2000/svg"><path d="M22 130 L50 130 L50 112 L90 62 L290 50 L355 75 L420 108 L428 130 L410 130 Q410 158 388 158 Q366 158 366 130 L118 130 Q118 158 96 158 Q74 158 74 130 Z"/><ellipse cx="96" cy="130" rx="30" ry="30" fill="none" stroke-width="6"/><ellipse cx="388" cy="130" rx="30" ry="30" fill="none" stroke-width="6"/><ellipse cx="96" cy="130" rx="11" ry="11"/><ellipse cx="388" cy="130" rx="11" ry="11"/><rect x="96" y="60" width="178" height="48" rx="5" opacity=".5"/></svg>`,
+};
+SVG.sedan  = SVG.car;
+SVG.luxury = SVG.car;
+SVG.sport  = SVG.car;
+SVG.ev     = SVG.car;
+
+function getSVG(cat){return SVG[cat]||SVG.car;}
+
+// ─── VEHICLES ────────────────────────────────────────────────────────────────
+const V=[
+  // HYPERCARS
+  {id:1,make:"Bugatti",   name:"Chiron Super Sport",  yr:2022,cat:"hypercar",tier:"hyper",hp:1600,tor:"1600 Nm",eng:"8.0L W16 Quad-Turbo",  spd:"440 km/h",wt:"1995 kg",a0:"2.3s", pr:"€3.2M",  ctry:"France",  s:{spd:99,acc:98,pwr:100,hnd:88,brk:94},rt:99, desc:"The most powerful production car ever — built by hand in Molsheim, France."},
+  {id:2,make:"Koenigsegg",name:"Jesko Absolut",        yr:2022,cat:"hypercar",tier:"hyper",hp:1600,tor:"1500 Nm",eng:"5.0L V8 Twin-Turbo",    spd:"330 km/h",wt:"1420 kg",a0:"2.5s", pr:"$3M",    ctry:"Sweden",  s:{spd:100,acc:99,pwr:100,hnd:95,brk:97},rt:99, desc:"Designed purely to be the fastest production car ever made. Swedish perfection."},
+  {id:3,make:"Rimac",     name:"Nevera",               yr:2023,cat:"hypercar",tier:"hyper",hp:1914,tor:"2360 Nm",eng:"4-Motor Electric",       spd:"412 km/h",wt:"2150 kg",a0:"1.85s",pr:"€2.1M",  ctry:"Croatia", s:{spd:99,acc:100,pwr:100,hnd:97,brk:99},rt:99, desc:"All-electric hypercar that rewrote every record. 1,914hp from four motors."},
+  {id:4,make:"Pagani",    name:"Huayra R",             yr:2022,cat:"hypercar",tier:"hyper",hp:850, tor:"750 Nm", eng:"6.0L V12 NA",            spd:"350 km/h",wt:"1050 kg",a0:"2.5s", pr:"€3.3M",  ctry:"Italy",   s:{spd:95,acc:96,pwr:90,hnd:98,brk:97},rt:97, desc:"Naturally aspirated V12 artistry. Track-only, soul-first engineering."},
+  {id:5,make:"Hennessey", name:"Venom F5",             yr:2023,cat:"hypercar",tier:"hyper",hp:1817,tor:"1617 Nm",eng:"6.6L V8 Twin-Turbo",     spd:"484 km/h",wt:"1338 kg",a0:"2.6s", pr:"$2.1M",  ctry:"USA",     s:{spd:100,acc:99,pwr:100,hnd:90,brk:93},rt:96, desc:"Built for 484 km/h — the most extreme American hypercar ever conceived."},
+  {id:6,make:"Mercedes-AMG",name:"ONE",                yr:2023,cat:"hypercar",tier:"hyper",hp:1063,tor:"1000 Nm",eng:"1.6L F1 Hybrid V6",     spd:"352 km/h",wt:"1695 kg",a0:"2.9s", pr:"€2.7M",  ctry:"Germany", s:{spd:97,acc:97,pwr:96,hnd:97,brk:98},rt:98, desc:"A literal F1 engine homologated for road use. Mercedes' most insane creation."},
+  {id:7,make:"Bugatti",   name:"Bolide",               yr:2024,cat:"hypercar",tier:"hyper",hp:1825,tor:"1850 Nm",eng:"8.0L W16 Quad-Turbo",   spd:"500 km/h",wt:"1450 kg",a0:"2.0s", pr:"€4M",    ctry:"France",  s:{spd:100,acc:100,pwr:100,hnd:96,brk:98},rt:100,desc:"Track-only apocalypse machine. 500 km/h. 1.4:1 power-to-weight ratio."},
+  // SUPERCARS
+  {id:8,make:"Ferrari",   name:"SF90 Stradale",        yr:2023,cat:"supercar",tier:"super",hp:1000,tor:"900 Nm", eng:"4.0L V8 + 3 Motors",   spd:"340 km/h",wt:"1570 kg",a0:"2.5s", pr:"€500K",  ctry:"Italy",   s:{spd:97,acc:97,pwr:95,hnd:95,brk:96},rt:96, desc:"Ferrari's most powerful road car ever — hybrid V8 that blurs F1 and road."},
+  {id:9,make:"Lamborghini",name:"Huracán STO",         yr:2023,cat:"supercar",tier:"super",hp:640, tor:"565 Nm", eng:"5.2L V10 NA",            spd:"310 km/h",wt:"1339 kg",a0:"3.0s", pr:"€330K",  ctry:"Italy",   s:{spd:92,acc:92,pwr:89,hnd:96,brk:97},rt:94, desc:"Super Trofeo Omologata — racing DNA in road-legal Italian fury."},
+  {id:10,make:"McLaren",  name:"765LT",                yr:2021,cat:"supercar",tier:"super",hp:765, tor:"800 Nm", eng:"4.0L V8 Twin-Turbo",    spd:"330 km/h",wt:"1229 kg",a0:"2.8s", pr:"£280K",  ctry:"UK",      s:{spd:94,acc:95,pwr:91,hnd:97,brk:98},rt:95, desc:"The lightest, sharpest McLaren ever. Longtail is a philosophy, not a shape."},
+  {id:11,make:"Porsche",  name:"911 GT2 RS",           yr:2023,cat:"supercar",tier:"super",hp:700, tor:"750 Nm", eng:"3.8L Flat-6 Biturbo",   spd:"340 km/h",wt:"1470 kg",a0:"2.7s", pr:"€330K",  ctry:"Germany", s:{spd:93,acc:93,pwr:88,hnd:96,brk:96},rt:95, desc:"The most powerful 911 ever built. Nürburgring record holder."},
+  {id:12,make:"Ferrari",  name:"296 GTB",              yr:2023,cat:"supercar",tier:"super",hp:830, tor:"740 Nm", eng:"3.0L V6 Hybrid",        spd:"330 km/h",wt:"1470 kg",a0:"2.9s", pr:"€320K",  ctry:"Italy",   s:{spd:93,acc:93,pwr:90,hnd:93,brk:93},rt:93, desc:"Ferrari's V6 revolution. Smaller engine, bigger soul."},
+  {id:13,make:"Lamborghini",name:"Revuelto",           yr:2024,cat:"supercar",tier:"super",hp:1001,tor:"730 Nm", eng:"6.5L V12 + 3 Motors",   spd:"350 km/h",wt:"1772 kg",a0:"2.5s", pr:"€500K",  ctry:"Italy",   s:{spd:97,acc:96,pwr:96,hnd:94,brk:95},rt:96, desc:"Aventador's successor — V12 hybrid fury. Louder, faster, more Lambo."},
+  {id:14,make:"Aston Martin",name:"Vantage F1 Edition",yr:2022,cat:"supercar",tier:"super",hp:535, tor:"685 Nm", eng:"4.0L V8 Twin-Turbo",    spd:"314 km/h",wt:"1530 kg",a0:"3.6s", pr:"£180K",  ctry:"UK",      s:{spd:88,acc:87,pwr:83,hnd:90,brk:90},rt:89, desc:"The F1 Safety Car — British muscle dressed in pure racing intent."},
+  {id:15,make:"McLaren",  name:"Artura",               yr:2023,cat:"supercar",tier:"super",hp:680, tor:"720 Nm", eng:"3.0L V6 Hybrid",        spd:"330 km/h",wt:"1498 kg",a0:"3.0s", pr:"£187K",  ctry:"UK",      s:{spd:91,acc:90,pwr:87,hnd:93,brk:92},rt:90, desc:"McLaren's first PHEV. New carbon architecture, same obsessive lightness."},
+  // SPORTS
+  {id:16,make:"Porsche",  name:"911 GT3 RS",           yr:2023,cat:"sport",   tier:"sport",hp:525, tor:"465 Nm", eng:"4.0L Flat-6 NA",         spd:"296 km/h",wt:"1450 kg",a0:"3.2s", pr:"€225K",  ctry:"Germany", s:{spd:88,acc:87,pwr:82,hnd:97,brk:96},rt:93, desc:"Active aero, 525hp NA. The ultimate track car with number plates."},
+  {id:17,make:"BMW",      name:"M4 CSL",               yr:2023,cat:"sport",   tier:"sport",hp:550, tor:"650 Nm", eng:"3.0L I6 Twin-Turbo",     spd:"307 km/h",wt:"1625 kg",a0:"3.7s", pr:"€145K",  ctry:"Germany", s:{spd:87,acc:85,pwr:82,hnd:90,brk:88},rt:90, desc:"1,000 made. Sharpest M4 BMW ever built. CSL means business."},
+  {id:18,make:"Mercedes-AMG",name:"GT Black Series",   yr:2021,cat:"sport",   tier:"sport",hp:730, tor:"800 Nm", eng:"4.0L V8 Biturbo",        spd:"325 km/h",wt:"1680 kg",a0:"3.2s", pr:"€335K",  ctry:"Germany", s:{spd:92,acc:91,pwr:90,hnd:93,brk:93},rt:93, desc:"Broke the Nürburgring record in 2021. The maddest AMG ever built."},
+  {id:19,make:"Chevrolet",name:"Corvette Z06",         yr:2023,cat:"sport",   tier:"sport",hp:670, tor:"623 Nm", eng:"5.5L V8 Flat-Plane NA",  spd:"312 km/h",wt:"1585 kg",a0:"2.6s", pr:"$109K",  ctry:"USA",     s:{spd:91,acc:93,pwr:89,hnd:92,brk:91},rt:92, desc:"Flat-plane V8 screaming at 8,600 RPM for $109K. America's answer."},
+  {id:20,make:"Nissan",   name:"GT-R Nismo",           yr:2022,cat:"sport",   tier:"sport",hp:600, tor:"652 Nm", eng:"3.8L V6 Twin-Turbo",     spd:"315 km/h",wt:"1740 kg",a0:"2.5s", pr:"$215K",  ctry:"Japan",   s:{spd:91,acc:94,pwr:86,hnd:91,brk:89},rt:90, desc:"Godzilla — Japan's AWD supercar-slayer that refuses to retire."},
+  {id:21,make:"Toyota",   name:"GR Supra A90",         yr:2023,cat:"sport",   tier:"sport",hp:387, tor:"500 Nm", eng:"3.0L I6 Twin-Turbo",     spd:"250 km/h",wt:"1570 kg",a0:"4.1s", pr:"$57K",   ctry:"Japan",   s:{spd:79,acc:78,pwr:73,hnd:84,brk:80},rt:82, desc:"Supra reborn. BMW underpinnings, Japanese soul, inline-six magic."},
+  {id:22,make:"Honda",    name:"Civic Type R FL5",     yr:2023,cat:"sport",   tier:"sport",hp:329, tor:"420 Nm", eng:"2.0L Turbocharged",      spd:"275 km/h",wt:"1429 kg",a0:"5.1s", pr:"$43K",   ctry:"Japan",   s:{spd:76,acc:74,pwr:68,hnd:91,brk:85},rt:85, desc:"FWD lap record holder at multiple circuits. Most fun per dollar here."},
+  {id:23,make:"Ford",     name:"Mustang Shelby GT500", yr:2023,cat:"sport",   tier:"sport",hp:760, tor:"847 Nm", eng:"5.2L Supercharged V8",   spd:"290 km/h",wt:"1919 kg",a0:"3.5s", pr:"$80K",   ctry:"USA",     s:{spd:87,acc:86,pwr:90,hnd:80,brk:82},rt:87, desc:"760 supercharged horses. Most powerful street-legal Mustang ever."},
+  {id:24,make:"Dodge",    name:"Challenger Demon 170", yr:2023,cat:"sport",   tier:"sport",hp:1025,tor:"1281 Nm",eng:"6.2L Supercharged HEMI", spd:"225 km/h",wt:"2003 kg",a0:"1.66s",pr:"$100K",  ctry:"USA",     s:{spd:78,acc:100,pwr:97,hnd:55,brk:70},rt:89, desc:"Fastest quarter-mile production car ever. 1,025hp on E85. Pure strip."},
+  {id:25,make:"Porsche",  name:"Cayman GT4 RS",        yr:2022,cat:"sport",   tier:"sport",hp:500, tor:"450 Nm", eng:"4.0L Flat-6 NA",         spd:"315 km/h",wt:"1415 kg",a0:"3.4s", pr:"€135K",  ctry:"Germany", s:{spd:89,acc:87,pwr:82,hnd:96,brk:95},rt:92, desc:"Mid-engine perfection. Some say it outshines the GT3 RS. They're right."},
+  {id:26,make:"Alfa Romeo",name:"Giulia GTA",          yr:2021,cat:"sport",   tier:"sport",hp:540, tor:"600 Nm", eng:"2.9L V6 Twin-Turbo",     spd:"270 km/h",wt:"1520 kg",a0:"3.6s", pr:"€180K",  ctry:"Italy",   s:{spd:85,acc:84,pwr:80,hnd:88,brk:87},rt:88, desc:"Gran Turismo Alleggerita. A limited-run masterpiece pulsing Italian soul."},
+  // LUXURY
+  {id:27,make:"Rolls-Royce",name:"Phantom VIII",       yr:2023,cat:"luxury",  tier:"luxury",hp:563,tor:"900 Nm", eng:"6.75L V12 Twin-Turbo",  spd:"250 km/h",wt:"2560 kg",a0:"5.1s", pr:"£500K+", ctry:"UK",      s:{spd:70,acc:68,pwr:72,hnd:55,brk:65},rt:88, desc:"400+ hours to build each one. The Phantom is not a car — it's a state of mind."},
+  {id:28,make:"Bentley",  name:"Continental GT Speed", yr:2023,cat:"luxury",  tier:"luxury",hp:659,tor:"900 Nm", eng:"6.0L W12 TSI",           spd:"335 km/h",wt:"2244 kg",a0:"3.6s", pr:"€280K",  ctry:"UK",      s:{spd:88,acc:85,pwr:85,hnd:82,brk:84},rt:92, desc:"Fastest four-seat GT. W12 twin-turbo meets handcrafted British perfection."},
+  {id:29,make:"Maybach",  name:"S680",                 yr:2023,cat:"luxury",  tier:"luxury",hp:621,tor:"900 Nm", eng:"6.0L V12 Biturbo",       spd:"250 km/h",wt:"2380 kg",a0:"4.8s", pr:"€180K",  ctry:"Germany", s:{spd:75,acc:73,pwr:78,hnd:65,brk:72},rt:89, desc:"Champagne flutes in the rear. Starlight headliner overhead. Pure opulence."},
+  {id:30,make:"Aston Martin",name:"DBS 770 Ultimate",  yr:2023,cat:"luxury",  tier:"luxury",hp:770,tor:"900 Nm", eng:"5.2L V12 Twin-Turbo",    spd:"340 km/h",wt:"1693 kg",a0:"3.2s", pr:"£340K",  ctry:"UK",      s:{spd:92,acc:89,pwr:90,hnd:85,brk:87},rt:93, desc:"Final front-engined V12 Aston Martin. 770hp farewell to an era."},
+  {id:31,make:"Maserati", name:"MC20",                 yr:2023,cat:"luxury",  tier:"luxury",hp:630,tor:"730 Nm", eng:"3.0L V6 Twin-Turbo",     spd:"325 km/h",wt:"1500 kg",a0:"2.9s", pr:"€215K",  ctry:"Italy",   s:{spd:91,acc:90,pwr:87,hnd:89,brk:88},rt:90, desc:"Maserati's supercar comeback with F1 pre-chamber combustion engine."},
+  // SEDANS
+  {id:32,make:"BMW",      name:"M5 Competition",       yr:2023,cat:"sedan",   tier:"sport",hp:625, tor:"750 Nm", eng:"4.4L V8 Biturbo",        spd:"305 km/h",wt:"1855 kg",a0:"3.3s", pr:"€145K",  ctry:"Germany", s:{spd:88,acc:87,pwr:84,hnd:87,brk:86},rt:90, desc:"School run. Track day. Autobahn blast. The super sedan with zero compromises."},
+  {id:33,make:"Mercedes-AMG",name:"E63 S 4MATIC+",    yr:2023,cat:"sedan",   tier:"sport",hp:612, tor:"850 Nm", eng:"4.0L V8 Biturbo",        spd:"300 km/h",wt:"2045 kg",a0:"3.4s", pr:"€130K",  ctry:"Germany", s:{spd:87,acc:86,pwr:82,hnd:85,brk:84},rt:89, desc:"Wolf in sheep's clothing — family sedan with Drift Mode as an option."},
+  {id:34,make:"Audi",     name:"RS7 Sportback",        yr:2023,cat:"sedan",   tier:"sport",hp:600, tor:"800 Nm", eng:"4.0L V8 TFSI",           spd:"305 km/h",wt:"1995 kg",a0:"3.6s", pr:"€130K",  ctry:"Germany", s:{spd:86,acc:84,pwr:81,hnd:83,brk:83},rt:88, desc:"Aggressive looks. AWD. 600hp. The RS7 makes sports cars feel redundant."},
+  {id:35,make:"Porsche",  name:"Panamera Turbo S",     yr:2023,cat:"sedan",   tier:"sport",hp:630, tor:"820 Nm", eng:"4.0L V8 Twin-Turbo",     spd:"315 km/h",wt:"2245 kg",a0:"3.1s", pr:"€215K",  ctry:"Germany", s:{spd:89,acc:91,pwr:84,hnd:87,brk:88},rt:91, desc:"Four doors. Four seats. Supercar performance. The impossible car."},
+  {id:36,make:"Cadillac", name:"CT5-V Blackwing",      yr:2023,cat:"sedan",   tier:"sport",hp:668, tor:"893 Nm", eng:"6.2L Supercharged V8",   spd:"322 km/h",wt:"1873 kg",a0:"3.7s", pr:"$90K",   ctry:"USA",     s:{spd:89,acc:87,pwr:86,hnd:85,brk:85},rt:88, desc:"America's forgotten super sedan. 668hp, manual option. Underrated legend."},
+  // ELECTRIC
+  {id:37,make:"Tesla",    name:"Model S Plaid",        yr:2023,cat:"ev",      tier:"ev",   hp:1020,tor:"1420 Nm",eng:"3-Motor Electric",       spd:"322 km/h",wt:"2162 kg",a0:"1.99s",pr:"$110K",  ctry:"USA",     s:{spd:94,acc:100,pwr:95,hnd:85,brk:90},rt:93, desc:"The quickest production sedan ever. 0–60 in 1.99s. The future arrived."},
+  {id:38,make:"Lucid",    name:"Air Sapphire",         yr:2023,cat:"ev",      tier:"ev",   hp:1234,tor:"1560 Nm",eng:"3-Motor Electric",       spd:"330 km/h",wt:"2243 kg",a0:"1.89s",pr:"$250K",  ctry:"USA",     s:{spd:96,acc:100,pwr:96,hnd:87,brk:92},rt:94, desc:"1,234hp, 410mi range. Most powerful EV sedan ever made."},
+  {id:39,make:"Porsche",  name:"Taycan Turbo GT",      yr:2024,cat:"ev",      tier:"ev",   hp:1108,tor:"1340 Nm",eng:"Dual-Motor Electric",    spd:"305 km/h",wt:"2130 kg",a0:"2.2s", pr:"€230K",  ctry:"Germany", s:{spd:93,acc:98,pwr:95,hnd:93,brk:95},rt:94, desc:"The fastest Taycan ever. Porsche proves EVs don't have to be soulless."},
+  {id:40,make:"Tesla",    name:"Roadster 2",           yr:2024,cat:"ev",      tier:"ev",   hp:1914,tor:"2100 Nm",eng:"3-Motor Electric",       spd:"400 km/h",wt:"1990 kg",a0:"1.9s", pr:"$200K",  ctry:"USA",     s:{spd:100,acc:100,pwr:100,hnd:90,brk:94},rt:98,desc:"SpaceX package. 1.9s 0–100. Tesla's hypercar ambition made real."},
+  {id:41,make:"Hyundai",  name:"IONIQ 5 N",            yr:2024,cat:"ev",      tier:"ev",   hp:641, tor:"740 Nm", eng:"Dual-Motor Electric",    spd:"260 km/h",wt:"2160 kg",a0:"3.4s", pr:"₩80M",   ctry:"S.Korea", s:{spd:82,acc:86,pwr:82,hnd:85,brk:85},rt:85, desc:"Korea's EV that shocked Europeans at the Nürburgring. Underdog of decade."},
+  // SUVs
+  {id:42,make:"Lamborghini",name:"Urus Performante",   yr:2023,cat:"suv",     tier:"suv",  hp:666, tor:"850 Nm", eng:"4.0L V8 Twin-Turbo",    spd:"306 km/h",wt:"2150 kg",a0:"3.3s", pr:"€260K",  ctry:"Italy",   s:{spd:88,acc:87,pwr:85,hnd:82,brk:84},rt:88, desc:"World's fastest track SUV. Lamborghini DNA you'd never admit wanting."},
+  {id:43,make:"Ferrari",   name:"Purosangue",          yr:2023,cat:"suv",     tier:"super",hp:725, tor:"716 Nm", eng:"6.5L V12 NA",            spd:"310 km/h",wt:"2033 kg",a0:"3.3s", pr:"€390K",  ctry:"Italy",   s:{spd:88,acc:87,pwr:87,hnd:85,brk:86},rt:90, desc:"Ferrari's first SUV. Naturally aspirated V12 in four-door form. Purists wept."},
+  {id:44,make:"Porsche",   name:"Cayenne Turbo GT",    yr:2023,cat:"suv",     tier:"suv",  hp:640, tor:"850 Nm", eng:"4.0L V8 Twin-Turbo",    spd:"300 km/h",wt:"2070 kg",a0:"3.3s", pr:"€185K",  ctry:"Germany", s:{spd:86,acc:85,pwr:83,hnd:87,brk:87},rt:88, desc:"Lapped the Nürburgring faster than a 911 Carrera. It actually happened."},
+  {id:45,make:"Rolls-Royce",name:"Cullinan Black Badge",yr:2023,cat:"suv",   tier:"luxury",hp:600,tor:"900 Nm", eng:"6.75L V12 Twin-Turbo",  spd:"250 km/h",wt:"2660 kg",a0:"5.0s", pr:"£350K",  ctry:"UK",      s:{spd:72,acc:70,pwr:80,hnd:60,brk:72},rt:87, desc:"The most luxurious SUV on Earth. Royalty on four wheels."},
+  {id:46,make:"Aston Martin",name:"DBX707",            yr:2023,cat:"suv",     tier:"super",hp:707, tor:"900 Nm", eng:"4.0L V8 Twin-Turbo",    spd:"310 km/h",wt:"2245 kg",a0:"3.3s", pr:"£195K",  ctry:"UK",      s:{spd:87,acc:85,pwr:84,hnd:83,brk:84},rt:90, desc:"707hp. 310 km/h. The most powerful luxury SUV ever produced."},
+  {id:47,make:"Range Rover",name:"Sport SVR",          yr:2023,cat:"suv",     tier:"suv",  hp:575, tor:"700 Nm", eng:"5.0L Supercharged V8",  spd:"283 km/h",wt:"2209 kg",a0:"4.3s", pr:"£115K",  ctry:"UK",      s:{spd:82,acc:78,pwr:78,hnd:72,brk:76},rt:86, desc:"Supercharged V8 legend. The Range Rover SVR is the all-round king."},
+  {id:48,make:"Alfa Romeo",name:"Stelvio QV",          yr:2023,cat:"suv",     tier:"sport",hp:510, tor:"600 Nm", eng:"2.9L V6 Twin-Turbo",    spd:"283 km/h",wt:"1830 kg",a0:"3.8s", pr:"€90K",   ctry:"Italy",   s:{spd:82,acc:82,pwr:78,hnd:85,brk:84},rt:87, desc:"Nürburgring SUV record holder. Ferrari-derived V6 in Italian passion form."},
+  // BIKES
+  {id:49,make:"Ducati",    name:"Panigale V4 R",       yr:2023,cat:"bike",    tier:"bike", hp:240, tor:"111 Nm", eng:"998cc Desmosedici R",    spd:"320 km/h",wt:"172 kg", a0:"2.8s", pr:"€40K",   ctry:"Italy",   s:{spd:96,acc:97,pwr:95,hnd:98,brk:97},rt:97, desc:"240hp. 172kg. Road-legal WSBk racer. Every part exists to go faster."},
+  {id:50,make:"Kawasaki",  name:"Ninja H2R",           yr:2023,cat:"bike",    tier:"bike", hp:326, tor:"165 Nm", eng:"998cc Supercharged I4",  spd:"400 km/h",wt:"216 kg", a0:"2.5s", pr:"€55K",   ctry:"Japan",   s:{spd:100,acc:99,pwr:100,hnd:85,brk:88},rt:99,desc:"Track-only. Supercharged. 326hp. Fastest production motorcycle ever built."},
+  {id:51,make:"BMW Motorrad",name:"M 1000 RR",         yr:2023,cat:"bike",    tier:"bike", hp:212, tor:"113 Nm", eng:"999cc Inline-4",         spd:"305 km/h",wt:"192 kg", a0:"3.1s", pr:"€35K",   ctry:"Germany", s:{spd:95,acc:94,pwr:91,hnd:95,brk:96},rt:95, desc:"BMW's first M superbike. MotoGP winglets, Bavarian precision."},
+  {id:52,make:"Honda",     name:"CBR1000RR-R SP",      yr:2023,cat:"bike",    tier:"bike", hp:217, tor:"113 Nm", eng:"1000cc Inline-4",        spd:"299 km/h",wt:"201 kg", a0:"2.9s", pr:"€30K",   ctry:"Japan",   s:{spd:94,acc:93,pwr:90,hnd:94,brk:95},rt:93, desc:"MotoGP DNA road-legal. Öhlins, Brembo, Honda precision all in one."},
+  {id:53,make:"Aprilia",   name:"RSV4 Factory",        yr:2023,cat:"bike",    tier:"bike", hp:217, tor:"125 Nm", eng:"1099cc V4",              spd:"299 km/h",wt:"199 kg", a0:"2.9s", pr:"€25K",   ctry:"Italy",   s:{spd:93,acc:93,pwr:90,hnd:95,brk:94},rt:93, desc:"The only V4 rival to Ducati. Italian soul, track weapon mentality."},
+  {id:54,make:"Yamaha",    name:"YZF-R1M",             yr:2023,cat:"bike",    tier:"bike", hp:200, tor:"113 Nm", eng:"998cc Crossplane I4",    spd:"299 km/h",wt:"199 kg", a0:"3.0s", pr:"€25K",   ctry:"Japan",   s:{spd:92,acc:92,pwr:88,hnd:94,brk:93},rt:91, desc:"Öhlins Electronic semi-active suspension. Carbon panels. Yamaha's best."},
+  {id:55,make:"KTM",       name:"1290 Super Duke R",   yr:2023,cat:"bike",    tier:"bike", hp:180, tor:"140 Nm", eng:"1301cc V-Twin",          spd:"280 km/h",wt:"189 kg", a0:"3.2s", pr:"€20K",   ctry:"Austria", s:{spd:88,acc:91,pwr:87,hnd:90,brk:91},rt:91, desc:"The Beast. Most powerful naked bike on the road — raw, addictive fury."},
+  {id:56,make:"Suzuki",    name:"Hayabusa Gen3",        yr:2022,cat:"bike",    tier:"bike", hp:190, tor:"150 Nm", eng:"1340cc I4",              spd:"299 km/h",wt:"264 kg", a0:"2.7s", pr:"€18K",   ctry:"Japan",   s:{spd:97,acc:96,pwr:92,hnd:80,brk:83},rt:90, desc:"The iconic Busa returns. A cultural phenomenon in motorcycle history."},
+  // CLASSICS
+  {id:57,make:"Ferrari",   name:"250 GTO",             yr:1962,cat:"classic", tier:"classic",hp:302,tor:"294 Nm",eng:"3.0L V12 NA",           spd:"280 km/h",wt:"880 kg", a0:"5.8s", pr:"$70M+",  ctry:"Italy",   s:{spd:72,acc:70,pwr:65,hnd:75,brk:60},rt:100,desc:"The most valuable car in the world. 36 built. Own one, own history."},
+  {id:58,make:"Lamborghini",name:"Miura P400 SV",      yr:1971,cat:"classic", tier:"classic",hp:385,tor:"400 Nm",eng:"3.9L V12 NA",           spd:"290 km/h",wt:"1245 kg",a0:"6.7s", pr:"$3M+",   ctry:"Italy",   s:{spd:74,acc:68,pwr:65,hnd:72,brk:58},rt:98, desc:"World's first supercar — unveiled at Geneva 1966. Nothing was ever the same."},
+  {id:59,make:"Porsche",   name:"917K",                yr:1970,cat:"classic", tier:"classic",hp:580,tor:"560 Nm",eng:"4.9L Flat-12",          spd:"390 km/h",wt:"800 kg", a0:"3.0s", pr:"$30M+",  ctry:"Germany", s:{spd:98,acc:96,pwr:90,hnd:88,brk:80},rt:99, desc:"Two Le Mans wins. Steve McQueen's film. A motorsport deity."},
+  {id:60,make:"Jaguar",    name:"E-Type Series 1",     yr:1961,cat:"classic", tier:"classic",hp:265,tor:"353 Nm",eng:"3.8L Inline-6",         spd:"241 km/h",wt:"1315 kg",a0:"7.1s", pr:"$400K+", ctry:"UK",      s:{spd:65,acc:60,pwr:55,hnd:68,brk:52},rt:97, desc:"Enzo Ferrari called it the most beautiful car ever made. Still is."},
+  {id:61,make:"Ford",      name:"GT40 Mk IV",          yr:1967,cat:"classic", tier:"classic",hp:535,tor:"720 Nm",eng:"7.0L V8 NA",            spd:"330 km/h",wt:"1020 kg",a0:"3.5s", pr:"$10M+",  ctry:"USA",     s:{spd:90,acc:88,pwr:85,hnd:80,brk:72},rt:99, desc:"Beat Ferrari at Le Mans 1966 & 1967. Henry Ford II's perfect revenge."},
+  {id:62,make:"Mercedes-Benz",name:"300SL Gullwing",  yr:1954,cat:"classic", tier:"classic",hp:215,tor:"270 Nm",eng:"3.0L I6 Fuel Injected", spd:"260 km/h",wt:"1295 kg",a0:"8.8s", pr:"$1.5M+", ctry:"Germany", s:{spd:68,acc:62,pwr:58,hnd:65,brk:50},rt:99, desc:"First car with fuel injection. Gullwing doors. Timeless perfection."},
+  // BRONZE — LEGENDS
+  {id:63,make:"Porsche",   name:"356 Speedster",       yr:1956,cat:"classic", tier:"bronze",hp:70,  tor:"98 Nm",  eng:"1.5L Flat-4 NA",        spd:"160 km/h",wt:"700 kg", a0:"14s",  pr:"$250K+", ctry:"Germany", s:{spd:38,acc:30,pwr:25,hnd:60,brk:35},rt:92, desc:"Where Porsche began. The 356 Speedster is the purest driver's car ever made."},
+  {id:64,make:"Honda",     name:"CB750",               yr:1969,cat:"classic", tier:"bronze",hp:67,  tor:"59 Nm",  eng:"736cc DOHC I4",          spd:"195 km/h",wt:"218 kg", a0:"N/A",  pr:"$25K+",  ctry:"Japan",   s:{spd:40,acc:38,pwr:30,hnd:55,brk:38},rt:95, desc:"The bike that created the modern motorcycle industry. Changed everything."},
+  {id:65,make:"Alfa Romeo",name:"Giulia Sprint GTA",   yr:1965,cat:"classic", tier:"bronze",hp:170, tor:"170 Nm", eng:"1.6L Twin-Cam I4",       spd:"210 km/h",wt:"745 kg", a0:"8.0s", pr:"$350K+", ctry:"Italy",   s:{spd:45,acc:44,pwr:38,hnd:72,brk:42},rt:94, desc:"745kg of pure Italian racing joy. The original lightweight hot road racer."},
+  {id:66,make:"Ford",      name:"Mustang Boss 429",    yr:1969,cat:"classic", tier:"bronze",hp:375, tor:"610 Nm", eng:"7.0L V8 NA",             spd:"210 km/h",wt:"1600 kg",a0:"6.5s", pr:"$200K+", ctry:"USA",     s:{spd:55,acc:52,pwr:60,hnd:50,brk:48},rt:91, desc:"The most iconic muscle car generation. Built for the 1969 NASCAR season."},
+  {id:67,make:"Ducati",    name:"900 SS SuperSport",   yr:1975,cat:"classic", tier:"bronze",hp:75,  tor:"72 Nm",  eng:"864cc L-Twin Desmo",     spd:"220 km/h",wt:"188 kg", a0:"N/A",  pr:"$30K+",  ctry:"Italy",   s:{spd:48,acc:44,pwr:40,hnd:70,brk:45},rt:90, desc:"The original Ducati 900 SS launched the superbike category in 1975."},
+  {id:68,make:"Triumph",   name:"Bonneville T120",     yr:1959,cat:"classic", tier:"bronze",hp:46,  tor:"65 Nm",  eng:"649cc Parallel Twin",    spd:"183 km/h",wt:"182 kg", a0:"N/A",  pr:"$18K+",  ctry:"UK",      s:{spd:38,acc:32,pwr:28,hnd:60,brk:35},rt:93, desc:"Named after the Bonneville Salt Flats record. Most iconic British motorcycle."},
+  {id:69,make:"BMW",       name:"2002 Turbo",          yr:1973,cat:"classic", tier:"bronze",hp:170, tor:"240 Nm", eng:"2.0L Turbocharged I4",   spd:"211 km/h",wt:"1080 kg",a0:"7.0s", pr:"$150K+", ctry:"Germany", s:{spd:60,acc:62,pwr:55,hnd:70,brk:55},rt:88, desc:"The car that launched the turbocharged era. BMW wrote the rulebook."},
+  {id:70,make:"Kawasaki",  name:"Z900RS",              yr:1972,cat:"classic", tier:"bronze",hp:67,  tor:"62 Nm",  eng:"903cc DOHC I4",          spd:"190 km/h",wt:"230 kg", a0:"N/A",  pr:"$12K",   ctry:"Japan",   s:{spd:42,acc:38,pwr:32,hnd:58,brk:40},rt:88, desc:"The original Z1 re-imagined. Kawasaki's most iconic motorcycle, reborn."},
+];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const sc=v=>v>=90?'#00d68f':v>=75?'#c9a84c':v>=60?'#ff9800':'#e03c31';
+const TL={hyper:'Hypercar',super:'Supercar',sport:'Sports',luxury:'Luxury',suv:'SUV',ev:'Electric',bike:'Moto',classic:'Classic',bronze:'Legend'};
+const GLOW={hyper:'glow-hyper',super:'glow-super',sport:'glow-sport',luxury:'glow-luxury',suv:'glow-suv',ev:'glow-ev',bike:'glow-bike',classic:'glow-classic',bronze:'glow-bronze'};
+const BG={hyper:'bg-hyper',super:'bg-super',sport:'bg-sport',luxury:'bg-luxury',suv:'bg-suv',ev:'bg-ev',bike:'bg-bike',classic:'bg-classic',bronze:'bg-bronze'};
+
+function buildCard(v){
+  const svg = getSVG(v.cat);
+  const tierColor = {hyper:'#ff3300',super:'#c9a84c',sport:'#3366ff',luxury:'#9933ff',suv:'#00aa44',ev:'#00ddff',bike:'#ff2222',classic:'#888',bronze:'#cd7f32'}[v.tier]||'#888';
+  const statRows = ['hnd','brk'].map(k=>
+    `<div class="sbr"><span class="sbl">${k.toUpperCase()}</span><div class="sbt"><div class="sbf" style="width:${v.s[k]}%;background:${sc(v.s[k])}"></div></div></div>`
+  ).join('');
+  const backSpecs = [
+    {k:'Horsepower',v:`${v.hp} hp`,hi:true},{k:'0–100 km/h',v:v.a0,hi:true},
+    {k:'Top Speed',v:v.spd},{k:'Torque',v:v.tor},
+    {k:'Engine',v:v.eng,sm:true},{k:'Weight',v:v.wt},
+    {k:'Price',v:v.pr,hi:true},{k:'Country',v:v.ctry}
+  ].map(s=>`<div class="bsi"><div class="bsk">${s.k}</div><div class="bsv${s.hi?' hi':''}${s.sm?' style=\\"font-size:9px\\"':''}">${s.v}</div></div>`).join('');
+
+  return `<div class="cw" data-id="${v.id}" data-cat="${v.cat}" data-tier="${v.tier}"
+    data-s="${(v.make+' '+v.name+' '+v.ctry+' '+v.cat).toLowerCase()}"
+    data-name="${v.make} ${v.name}">
+  <div class="ci">
+    <div class="cf ${BG[v.tier]||'bg-sport'}">
+      <div class="csilhouette">
+        <div class="glow ${GLOW[v.tier]||''}"></div>
+        <div class="csv-el" style="color:${tierColor}">${svg}</div>
+      </div>
+      <div class="cov"></div>
+      <span class="ctier t-${v.tier}">${TL[v.tier]||v.tier}</span>
+      <button class="cmpbtn" title="Compare" onclick="toggleCompare(${v.id},event)">
+        <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      </button>
+      <div class="cc">
+        <div class="cma">${v.make}</div>
+        <div class="cnm">${v.name}</div>
+        <div class="cst">
+          <div class="cs"><div class="csv2" style="color:${sc(v.s.spd)}">${v.s.spd}</div><div class="csl2">Speed</div></div>
+          <div class="cs"><div class="csv2" style="color:${sc(v.s.acc)}">${v.s.acc}</div><div class="csl2">Launch</div></div>
+          <div class="cs"><div class="csv2" style="color:${sc(v.s.pwr)}">${v.s.pwr}</div><div class="csl2">Power</div></div>
+        </div>
+        <div class="sbw">${statRows}</div>
+      </div>
+      <button class="shbtn" title="Download PNG" onclick="shareCard(${v.id},event)">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+    </div>
+    <div class="cb">
+      <div class="bh">
+        <div class="bma">${v.make} · ${v.ctry}</div>
+        <div class="bnm">${v.name}</div>
+        <div class="byr">${v.yr}</div>
+      </div>
+      <div class="brt">
+        <span style="font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Rating</span>
+        <div class="rbb"><div class="rbf" style="width:${v.rt}%"></div></div>
+        <span class="rbn">${v.rt}</span>
+      </div>
+      <div class="bsp">${backSpecs}</div>
+      <div class="bds">${v.desc}</div>
+      <div class="bhi">← Hover / tap to flip back</div>
+    </div>
+  </div>
+</div>`;
+}
+
+document.getElementById('grid').innerHTML = '<div class="nor" id="nor">No vehicles found.</div>' + V.map(buildCard).join('');
+
+// ─── FILTER + SEARCH ─────────────────────────────────────────────────────────
+let af='all', sq='';
+function applyFilters(){
+  let n=0;
+  document.querySelectorAll('.cw').forEach(c=>{
+    const ok=(af==='all'||(af==='bronze'?c.dataset.tier==='bronze':c.dataset.cat===af))&&(!sq||c.dataset.s.includes(sq));
+    c.style.display=ok?'':'none';
+    if(ok)n++;
+  });
+  document.getElementById('nor').className='nor'+(n?'':' show');
+}
+document.getElementById('fbar').addEventListener('click',e=>{
+  const b=e.target.closest('.fb');if(!b)return;
+  document.querySelectorAll('.fb').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');af=b.dataset.c;applyFilters();
+});
+document.getElementById('search').addEventListener('input',e=>{
+  sq=e.target.value.toLowerCase().trim();applyFilters();
+});
+
+// FLIP
+const CLICK_FLIP_ONLY = (() => {
+  // On touch/coarse pointers, flip on tap; on fine pointers, use CSS hover flip.
+  const m1 = matchMedia?.('(hover: none)')?.matches;
+  const m2 = matchMedia?.('(pointer: coarse)')?.matches;
+  return Boolean(m1 || m2 || (navigator && navigator.maxTouchPoints > 0));
+})();
+document.getElementById('grid').addEventListener('click',e=>{
+  if(!CLICK_FLIP_ONLY) return;
+  if(e.target.closest('.cmpbtn')||e.target.closest('.shbtn'))return;
+  const cw=e.target.closest('.cw');if(!cw)return;
+  cw.classList.toggle('flp');
+});
+
+// ─── INTERSECTION OBSERVER ───────────────────────────────────────────────────
+const io=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('vis'),i*38);io.unobserve(e.target);}});
+},{threshold:0.05,rootMargin:'0px 0px -20px 0px'});
+document.querySelectorAll('.cw').forEach(c=>io.observe(c));
+
+// ─── 3D TILT ─────────────────────────────────────────────────────────────────
+let tmx=0,tmy=0,traf=false;
+document.addEventListener('mousemove',e=>{
+  tmx=e.clientX;tmy=e.clientY;
+  if(!traf){traf=true;requestAnimationFrame(()=>{traf=false;
+    document.querySelectorAll('.cw.vis:not(.flp)').forEach(w=>{
+      const r=w.getBoundingClientRect();
+      if(r.top>innerHeight+100||r.bottom<-100)return;
+      const dx=(tmx-(r.left+r.width/2))/(r.width*.5);
+      const dy=(tmy-(r.top+r.height/2))/(r.height*.5);
+      const i=w.querySelector('.ci');
+      if(Math.sqrt(dx*dx+dy*dy)<1.2){i.style.transform=`rotateY(${dx*5}deg) rotateX(${-dy*4}deg)`;i.style.transition='transform .08s ease';}
+      else{i.style.transform='';i.style.transition='transform .72s cubic-bezier(.23,1,.32,1)';}
+    });
+  });}
+},{passive:true});
+document.querySelectorAll('.cw').forEach(w=>{
+  w.addEventListener('mouseleave',()=>{if(!w.classList.contains('flp')){const i=w.querySelector('.ci');i.style.transform='';i.style.transition='transform .72s cubic-bezier(.23,1,.32,1)';}});
+});
+
+// ─── COMPARE ─────────────────────────────────────────────────────────────────
+let sel=[];
+function toggleCompare(id,e){
+  e.stopPropagation();
+  const v=V.find(x=>x.id===id);if(!v)return;
+  const idx=sel.findIndex(x=>x.id===id);
+  if(idx>=0){sel.splice(idx,1);document.querySelector(`[data-id="${id}"] .cmpbtn`).classList.remove('sel');}
+  else{if(sel.length>=2){showToast('Max 2 for comparison');return;}sel.push(v);document.querySelector(`[data-id="${id}"] .cmpbtn`).classList.add('sel');}
+  updateDock();
+}
+function updateDock(){
+  const dock=document.getElementById('cmp-dock');
+  const dcb=document.getElementById('dcmpbtn');
+  if(!sel.length){dock.classList.remove('show');return;}
+  dock.classList.add('show');
+  document.getElementById('dock-slots').innerHTML=sel.map(v=>`
+    <div class="dcard">
+      <div class="dthumb" style="background:${({hyper:'#1a0500',super:'#1e1400',sport:'#000a1f',luxury:'#0a0015',suv:'#001508',ev:'#00151f',bike:'#1a0000',classic:'#0f0f0f',bronze:'#180b00'}[v.tier]||'#111')}">
+        <div style="color:${({hyper:'#ff3300',super:'#c9a84c',sport:'#3366ff',luxury:'#9933ff',suv:'#00aa44',ev:'#00ddff',bike:'#ff2222',classic:'#888',bronze:'#cd7f32'}[v.tier]||'#888')};width:38px;height:24px">${getSVG(v.cat)}</div>
+      </div>
+      <span class="dname">${v.name}</span>
+      <button class="dx" onclick="toggleCompare(${v.id},event)">✕</button>
+    </div>`).join('');
+  dcb.className=sel.length===2?'show':'';
+}
+function openCompare(){
+  if(sel.length<2)return;
+  const [a,b]=sel;
+  const stats=['spd','acc','pwr','hnd','brk'];
+  const sl2={spd:'Speed',acc:'Launch',pwr:'Power',hnd:'Handling',brk:'Braking'};
+  const tierColor=t=>({hyper:'#ff3300',super:'#c9a84c',sport:'#3366ff',luxury:'#9933ff',suv:'#00aa44',ev:'#00ddff',bike:'#ff2222',classic:'#888',bronze:'#cd7f32'}[t]||'#888');
+  function col(v,clr){
+    return `<div class="cpcar">
+      <div class="cpthumb" style="background:${({hyper:'#1a0500',super:'#1e1400',sport:'#000a1f',luxury:'#0a0015',suv:'#001508',ev:'#00151f',bike:'#1a0000',classic:'#0f0f0f',bronze:'#180b00'}[v.tier]||'#111')}">
+        <div style="color:${tierColor(v.tier)};width:180px">${getSVG(v.cat)}</div>
+      </div>
+      <div class="cpinfo">
+        <div class="cpcmake">${v.make}</div>
+        <div class="cpcname">${v.name}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">${v.hp}hp · ${v.a0} · ${v.spd}</div>
+        <div class="cpcstats">${stats.map(k=>{
+          const val=v.s[k];
+          const win=(v===a&&a.s[k]>=b.s[k])||(v===b&&b.s[k]>=a.s[k]);
+          return `<div class="cpstat"><span class="cpsl">${sl2[k]}</span><div class="cpbw"><div class="cpb ${clr}" style="width:${val}%"></div></div><span class="cpval" style="color:${win?'var(--gold)':'var(--muted)'}">${val}</span></div>`;
+        }).join('')}</div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('cpgrid').innerHTML=col(a,'bar-a')+'<div class="cpvs">VS</div>'+col(b,'bar-b');
+  document.getElementById('cpanel').classList.add('open');
+}
+function closeCompare(){document.getElementById('cpanel').classList.remove('open');}
+
+// ─── SHARE AS PNG ─────────────────────────────────────────────────────────────
+function shareCard(id,e){
+  e.stopPropagation();
+  const v=V.find(x=>x.id===id);if(!v)return;
+  const W=640,H=380,c=document.createElement('canvas');
+  c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  const tierColor={hyper:'#ff3300',super:'#c9a84c',sport:'#3366ff',luxury:'#9933ff',suv:'#00aa44',ev:'#00ddff',bike:'#ff2222',classic:'#888',bronze:'#cd7f32'}[v.tier]||'#888';
+  const tierBg={hyper:'#1a0500',super:'#1e1400',sport:'#000a1f',luxury:'#0a0015',suv:'#001508',ev:'#00151f',bike:'#1a0000',classic:'#0f0f0f',bronze:'#180b00'}[v.tier]||'#0a0a0a';
+
+  // Background gradient
+  const g=ctx.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,tierBg);g.addColorStop(1,'#040404');
+  ctx.fillStyle=g;roundRect(ctx,0,0,W,H,16);ctx.fill();
+
+  // Glow
+  const rg=ctx.createRadialGradient(W*.75,H*.5,0,W*.75,H*.5,W*.5);
+  rg.addColorStop(0,tierColor+'22');rg.addColorStop(1,'transparent');
+  ctx.fillStyle=rg;ctx.fillRect(0,0,W,H);
+
+  // Gold accent line left
+  ctx.strokeStyle=tierColor;ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(28,0);ctx.lineTo(28,H);ctx.stroke();
+
+  // REVCARD label
+  ctx.fillStyle=tierColor;ctx.font='700 10px monospace';ctx.letterSpacing='5px';ctx.fillText('REVCARD',44,30);
+
+  // Tier badge
+  ctx.fillStyle=tierColor;roundRect(ctx,44,38,68,17,8);ctx.fill();
+  ctx.fillStyle=v.tier==='super'||v.tier==='ev'?'#000':'#fff';
+  ctx.font='700 8px monospace';ctx.letterSpacing='1px';ctx.fillText((TL[v.tier]||v.tier).toUpperCase(),52,51);
+
+  // Make
+  ctx.fillStyle=tierColor;ctx.font='600 11px sans-serif';ctx.letterSpacing='3px';ctx.fillText(v.make.toUpperCase(),44,76);
+
+  // Name
+  ctx.fillStyle='#fff';ctx.font='700 34px serif';ctx.letterSpacing='-1px';ctx.fillText(v.name,44,116);
+
+  // Key specs
+  const specs=[{l:'HP',v:v.hp},{l:'0–100',v:v.a0},{l:'TOP SPEED',v:v.spd.replace(' km/h','km/h')}];
+  specs.forEach((s,i)=>{
+    const x=44+i*155;
+    ctx.fillStyle=tierColor;ctx.font='700 20px monospace';ctx.letterSpacing='0';ctx.fillText(String(s.v),x,155);
+    ctx.fillStyle='#444';ctx.font='9px sans-serif';ctx.letterSpacing='2px';ctx.fillText(s.l,x,170);
+  });
+
+  // Stat bars
+  const stats=['spd','acc','pwr','hnd','brk'];
+  const slbls={spd:'SPD',acc:'ACC',pwr:'PWR',hnd:'HND',brk:'BRK'};
+  stats.forEach((k,i)=>{
+    const y=195+i*28,val=v.s[k];
+    const col=val>=90?'#00d68f':val>=75?'#c9a84c':val>=60?'#ff9800':'#e03c31';
+    ctx.fillStyle='rgba(255,255,255,0.05)';roundRect(ctx,44,y,270,8,4);ctx.fill();
+    ctx.fillStyle=col;roundRect(ctx,44,y,270*val/100,8,4);ctx.fill();
+    ctx.fillStyle='#555';ctx.font='8px monospace';ctx.letterSpacing='1px';ctx.fillText(slbls[k],324,y+7);
+    ctx.fillStyle=col;ctx.font='700 10px monospace';ctx.fillText(val,354,y+7);
+  });
+
+  // Rating box
+  ctx.fillStyle='rgba(255,255,255,0.04)';roundRect(ctx,44,H-52,72,34,8);ctx.fill();
+  ctx.strokeStyle=tierColor+'44';ctx.lineWidth=1;roundRect(ctx,44,H-52,72,34,8);ctx.stroke();
+  ctx.fillStyle=tierColor;ctx.font='700 20px monospace';ctx.fillText(v.rt,56,H-30);
+  ctx.fillStyle='#444';ctx.font='8px sans-serif';ctx.letterSpacing='2px';ctx.fillText('RATING',56,H-18);
+
+  // Year + engine small
+  ctx.fillStyle='#333';ctx.font='9px monospace';ctx.letterSpacing='1px';
+  ctx.fillText(`${v.yr} · ${v.eng}`,124,H-38);ctx.fillText(v.pr,124,H-24);
+
+  const a2=document.createElement('a');
+  a2.download=`revcard-${(v.make+'-'+v.name).toLowerCase().replace(/[^a-z0-9]/g,'-')}.png`;
+  a2.href=c.toDataURL('image/png');a2.click();
+  showToast('📥 Card saved as PNG!');
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+// ─── PARTICLES ───────────────────────────────────────────────────────────────
+(()=>{
+  const cv=document.getElementById('ptc'),ctx=cv.getContext('2d');
+  let W,H,P=[];
+  const resize=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight;};
+  resize();addEventListener('resize',resize,{passive:true});
+  class Pt{constructor(){this.r();}r(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.13;this.vy=(Math.random()-.5)*.13;this.rad=Math.random()*1+.3;this.a=Math.random()*.16+.03;this.g=Math.random()<.25;}u(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.r();}d(){ctx.beginPath();ctx.arc(this.x,this.y,this.rad,0,Math.PI*2);ctx.fillStyle=this.g?`rgba(201,168,76,${this.a})`:`rgba(255,255,255,${this.a*.45})`;ctx.fill();}}
+  for(let i=0;i<50;i++)P.push(new Pt());
+  let fr=0;
+  const loop=()=>{ctx.clearRect(0,0,W,H);fr++;const dl=fr%3===0;
+    for(let i=0;i<P.length;i++){
+      if(dl)for(let j=i+1;j<P.length;j++){const dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,d=dx*dx+dy*dy;if(d<7000){ctx.beginPath();ctx.moveTo(P[i].x,P[i].y);ctx.lineTo(P[j].x,P[j].y);ctx.strokeStyle=`rgba(201,168,76,${(.06*(1-d/7000)).toFixed(3)})`;ctx.lineWidth=.22;ctx.stroke();}}
+      P[i].u();P[i].d();
+    }requestAnimationFrame(loop);};loop();
+})();
+
+// ─── CURSOR ──────────────────────────────────────────────────────────────────
+const curEl=document.getElementById('cur'),ringEl=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;curEl.style.left=mx+'px';curEl.style.top=my+'px';},{passive:true});
+(function ar(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ringEl.style.left=Math.round(rx)+'px';ringEl.style.top=Math.round(ry)+'px';requestAnimationFrame(ar);})();
+document.querySelectorAll('a,button,.cw,.fb').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{curEl.style.transform='translate(-50%,-50%) scale(2.2)';ringEl.style.width='48px';ringEl.style.height='48px';ringEl.style.borderColor='rgba(201,168,76,.8)';},{passive:true});
+  el.addEventListener('mouseleave',()=>{curEl.style.transform='translate(-50%,-50%) scale(1)';ringEl.style.width='34px';ringEl.style.height='34px';ringEl.style.borderColor='rgba(201,168,76,.4)';},{passive:true});
+});
+
+// ─── MISC ────────────────────────────────────────────────────────────────────
+addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('s',scrollY>50),{passive:true});
+function cu(el,t,sf=''){let n=0,s=Math.max(1,Math.ceil(t/60));const tm=setInterval(()=>{n=Math.min(n+s,t);el.textContent=n+sf;if(n>=t)clearInterval(tm);},22);}
+setTimeout(()=>{cu(document.getElementById('c1'),V.length,'+');cu(document.getElementById('c2'),10,'');cu(document.getElementById('c3'),35,'+');},900);
+</script>
+</body>
+</html>
